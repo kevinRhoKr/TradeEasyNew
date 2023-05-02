@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import {
   Pressable,
   Text,
@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { S3 } from "aws-sdk/dist/aws-sdk-react-native";
 import * as config from "../../keys.json";
 import { AuthContext } from "../store/AuthContextNew";
+import { useIsFocused } from "@react-navigation/native";
 
 const accessKeyId = config.accessKeyId;
 const secretAccessKey = config.secretAccessKey;
@@ -39,6 +40,10 @@ export function MarketPage() {
   const [desc, setDesc] = useState("");
   const [authState, setAuthState] = useContext(AuthContext);
   const [refresh, setRefresh] = useState(false);
+
+  // const isFocused = useIsFocused();
+
+  // useEffect(() => {}, [isFocused]);
 
   const pressed = () => {
     setIsPressed(!isPressed);

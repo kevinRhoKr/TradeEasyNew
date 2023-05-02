@@ -1,13 +1,49 @@
 import React, { useEffect, useState, useContext } from "react";
-import { Text, View, StyleSheet, ScrollView, Pressable } from "react-native";
+import {
+  Text,
+  View,
+  StyleSheet,
+  ScrollView,
+  Pressable,
+  Button,
+} from "react-native";
 import { AuthContext } from "../store/AuthContextNew";
 import { AntDesign } from "@expo/vector-icons";
+
+// import { useIsFocused } from "@react-navigation/native";
 
 export function ChatPage(props) {
   const [reload, setReload] = useState(false);
   const [authState, setAuthState] = useContext(AuthContext);
   const [chats, setChats] = useState([]);
   const [me, setMe] = useState(null);
+
+  // const isFocused = useIsFocused();
+
+  const handleReportUser = async (user) => {
+    //this will be reported user email
+    const email = user;
+    console.log(email);
+    fetch("https://trade-easy.herokuapp.com/api/v1/reportUser", {
+      method: "PUT",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authState.token}`,
+      },
+      body: JSON.stringify({ email: email }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        alert("User reported successfully!");
+      })
+      .catch((error) => {
+        //display error message
+        console.log("Report user error");
+        console.warn(error);
+      });
+  };
 
   useEffect(() => {
     fetch("https://trade-easy.herokuapp.com/api/v1/chats", {
@@ -34,7 +70,7 @@ export function ChatPage(props) {
   return (
     <ScrollView>
       <View style={{ flex: 1, alignItems: "center" }}>
-        {chats.length == 0 && <Text>No matches</Text>}
+        {chats.length == 0 && <Text style={{ paddingTop: 100 }}>No matches</Text>}
         {chats.map((chat) => (
           <View key={chat.chat_id} style={styles.container}>
             <Pressable
@@ -48,18 +84,25 @@ export function ChatPage(props) {
                 props.navigation.navigate("Chat", {
                   me1: {
                     name: me.f_name,
-                    email: me.email
+                    email: me.email,
                   },
                   other1: {
                     name: chat.name.f_name,
-                    email: chat.email1 == me.email ? chat.email2 : chat.email1
-                  }
+                    email: chat.email1 == me.email ? chat.email2 : chat.email1,
+                  },
                 });
               }}
             >
               <Text style={styles.nameText}>
                 {chat.name.f_name} {chat.name.l_name}
               </Text>
+              <Button
+                title="Report"
+                onPress={() => {
+                  const user = chat.email1 == me.email ? chat.email2 : chat.email1
+                  handleReportUser(user)
+                }}
+              ></Button>
               <AntDesign
                 name="right"
                 size={50}
@@ -109,7 +152,7 @@ const styles = StyleSheet.create({
 
   nameText: {
     fontWeight: "bold",
-    fontSize: 30,
+    fontSize: 20,
     padding: 10,
     marginLeft: 20,
   },

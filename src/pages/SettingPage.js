@@ -55,30 +55,6 @@ export function SettingPage() {
       });
   };
 
-  const handleReportUser = async () => {
-    //this will be reported user email
-    const email = "heroku@gmail.com";
-    fetch("https://trade-easy.herokuapp.com/api/v1/reportUser", {
-      method: "PUT",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authState.token}`,
-      },
-      body: JSON.stringify({ email: email }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        alert("User reported successfully!");
-      })
-      .catch((error) => {
-        //display error message
-        console.log("Report user error");
-        console.warn(error);
-      });
-  };
-
   const handleProximityChange = (value) => {
     setProximity(value);
   };
@@ -113,18 +89,6 @@ export function SettingPage() {
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>
         Hello {fname}
       </Text>
-
-      <Pressable
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? "#00FFFF" : "#008080",
-          },
-          styles.button,
-        ]}
-        onPress={handleReportUser}
-      >
-        <Text style={styles.text}>Report User</Text>
-      </Pressable>
 
       <View style={{ marginVertical: 10 }}>
         <Text style={{ fontSize: 16 }}>Location Proximity</Text>
