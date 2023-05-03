@@ -45,6 +45,7 @@ export function ChatPage(props) {
       });
   };
 
+  
   useEffect(() => {
     fetch("https://trade-easy.herokuapp.com/api/v1/chats", {
       method: "GET",
